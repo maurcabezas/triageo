@@ -87,34 +87,40 @@ MVP deployment:
 6. API stores result.
 7. Frontend renders structured response.
 
-## Proposed repository layout
+## Repository Layout
 
 ```text
 triageo/
+├── .github/workflows/
+│   └── ci.yml             # GitHub Actions CI syntax & test pipeline
 ├── apps/
-│   ├── api/
+│   ├── api/               # FastAPI application
 │   │   ├── app/
-│   │   │   ├── api/
-│   │   │   ├── core/
-│   │   │   ├── graph/
-│   │   │   ├── models/
-│   │   │   ├── services/
-│   │   │   └── main.py
-│   │   ├── requirements.txt
-│   │   └── Dockerfile
-│   └── web/
-│       ├── src/
-│       ├── public/
-│       └── Dockerfile
+│   │   │   ├── api/       # Router endpoints
+│   │   │   ├── core/      # Config and LLM drivers
+│   │   │   ├── graph/     # LangGraph nodes and compilation
+│   │   │   ├── models/    # Pydantic schema types
+│   │   │   └── services/  # Knowledge Base and SQLite DB layers
+│   │   ├── Dockerfile
+│   │   └── requirements.txt
+│   └── web/               # Frontend dashboard static assets
+│       ├── index.html
+│       ├── style.css
+│       ├── app.js
+│       └── Dockerfile     # Nginx server
 ├── data/
-│   ├── knowledge_base/
-│   └── triageo.db
-├── docs/
-├── infra/
-│   └── docker/
-├── tests/
+│   └── knowledge_base/    # Local policy markdown docs
+├── tests/                 # Complete unit and integration test suite
+│   ├── conftest.py        # Global fixtures and state configuration
+│   ├── integration/
+│   │   └── test_api.py    # Integration tests for FastAPI endpoints
+│   └── unit/
+│       ├── test_nodes.py  # Unit tests for LangGraph nodes with mock LLM calls
+│       └── test_routing.py# Unit tests for routing and human escalation decider
 ├── .env.example
-├── docker-compose.yml
+├── docker-compose.yml     # Local/dev docker stack
+├── docker-compose.prod.yml# Production stack with log caps
+├── pytest.ini             # Pytest settings and warning suppression
 └── README.md
 ```
 
@@ -136,6 +142,28 @@ class TriageState(TypedDict):
     requires_human_review: bool
     reasoning: str
 ```
+
+## Testing Architecture
+
+The project implements a testing architecture built using `pytest` to guarantee code correctness, fast validation, and offline readiness:
+
+### 1. Fixtures & Setup (`conftest.py`)
+- Sets up Python path injection so tests can resolve the nested `app` package.
+- Registers standard `client` (FastAPI `TestClient`) and predefined state fixtures (`base_state`, `high_confidence_state`, `low_confidence_state`) mimicking the actual `TriageState` TypedDict structure.
+
+### 2. Unit Testing Layer (`tests/unit/`)
+- **`test_routing.py`**: Asserts deterministic routing tables (category queue targets) and edge cases for the human-escalation decision matrix.
+- **`test_nodes.py`**: Validates individual LangGraph node behaviors. Crucially, the Gemini/OpenAI LLM calls are patched/mocked using `unittest.mock` (mocking the `with_structured_output` response) to allow the test suite to run keyless and completely offline.
+
+### 3. Integration Testing Layer (`tests/integration/`)
+- **`test_api.py`**: Validates end-to-end FastAPI endpoint logic including:
+  - `/health` check status codes and payloads.
+  - `/api/v1/triage/history` querying and data representation.
+  - `/api/v1/triage` processing requests (with the LangGraph runner output mocked to isolate the REST api layer).
+  - Schema validation bounds triggering custom 422 JSON validation responses.
+
+### 4. Suppression & Warning Config (`pytest.ini`)
+- Filters third-party deprecation warnings (e.g., from LangGraph, Starlette, or LangChain core) to ensure clean test runner reports.
 
 ## Engineering decisions
 

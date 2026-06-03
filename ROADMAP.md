@@ -103,20 +103,21 @@ Definition of done:
 - Complete dashboard matches custom design system assets
 - Interactive states and components feel premium and polished
 
-## Phase 6 - Deployment polish
+## Phase 6 - Deployment polish & Testing
 
-Goal: make it portfolio-ready.
+Goal: make it portfolio-ready and fully validated.
 
 Tasks:
-- add Docker Compose for prod
-- add GitHub Actions for lint/test/build
-- add screenshots and demo GIFs to README
-- improve error handling
-- write setup instructions for home server deploy
+- [x] add Docker Compose for prod
+- [x] add GitHub Actions for lint/test/build
+- [x] create a comprehensive unit & integration test suite (`pytest`)
+- [x] add screenshots and banners to README
+- [x] improve error handling and 422 JSON validators
+- [x] write setup instructions for home server deploy
 
 Definition of done:
-- fresh clone can run locally
-- repo looks credible to hiring managers
+- fresh clone can run locally and tests pass with 100% success
+- repo looks credible and fully tested to hiring managers
 
 ## Nice-to-have later
 

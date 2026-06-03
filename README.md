@@ -94,5 +94,20 @@ Launches the stack with automated **log rotation limits** configured (caps logs 
 docker compose -f docker-compose.prod.yml up -d --build
 ```
 
-### 3. CI/CD Verification
-Your commits pushed to `main` will automatically build the images and run Python compile checks using GitHub Actions.
+### 3. Running the Test Suite
+The codebase includes a complete testing suite using `pytest` validating both individual LangGraph nodes (unit tests with LLM mocking) and FastAPI endpoints (integration tests).
+
+To run the tests on your host machine:
+1. Initialize a Python virtual environment:
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   pip install -r apps/api/requirements.txt
+   ```
+2. Run the tests:
+   ```bash
+   python3 -m pytest tests/
+   ```
+
+### 4. CI/CD Verification
+Your commits pushed to `main` will automatically build the Docker images, run compilation checks, and execute the full test suite (`pytest`) using GitHub Actions.
