@@ -1,4 +1,6 @@
-![Triageo Banner](triageo_github_banner.png)
+<p align="center">
+  <img src="triageo_github_banner.png" alt="Triageo Banner" width="100%">
+</p>
 
 # Triageo
 
