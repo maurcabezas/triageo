@@ -1,57 +1,45 @@
-# Python
+# === SECRETS — never commit these ===
+.env
+.env.*
+!.env.example        # ← this line KEEPS .env.example tracked
+*.pem
+*.key
+*.p12
+secrets/
+
+# === Python ===
 __pycache__/
 *.py[cod]
-*.pyo
-*.pyd
-.Python
-*.egg
 *.egg-info/
-dist/
-build/
-eggs/
-parts/
-var/
-sdist/
-wheels/
-*.egg-link
-.installed.cfg
-lib/
-lib64/
 .venv/
 venv/
-env/
-ENV/
-
-# Environment
-.env
-*.env.local
-
-# Testing
+dist/
+build/
+*.so
 .pytest_cache/
 .coverage
 htmlcov/
-.tox/
 
-# Editors
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# Node / frontend
+# === Node / Frontend ===
 node_modules/
 .next/
-dist/
-.cache/
+out/
+.turbo/
 
-# SQLite
-*.db
-*.sqlite
-
-# Docker
+# === Docker ===
+data/
+db_data/
 *.log
 
-# OS
+# === OS / Editors ===
 .DS_Store
 Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# === LangGraph / AI ===
+chroma_db/
+*.faiss
+*.index
+vector_store/

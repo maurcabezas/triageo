@@ -29,6 +29,10 @@ jobs:
         # Check all python files for syntax compilation errors
         python -m compileall apps/api/app
 
+    - name: Run Test Suite
+      run: |
+        python -m pytest tests/
+
   docker-build-check:
     runs-on: ubuntu-latest
     steps:
