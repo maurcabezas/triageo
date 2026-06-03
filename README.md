@@ -45,7 +45,7 @@ graph LR
 ```text
 triageo/
 ├── .github/workflows/
-│   └── ci.yml             # GitHub Actions CI syntax pipeline
+│   └── ci.yml             # GitHub Actions CI syntax & test pipeline
 ├── apps/
 │   ├── api/               # FastAPI application
 │   │   ├── app/
@@ -63,9 +63,17 @@ triageo/
 │       └── Dockerfile     # Nginx server
 ├── data/
 │   └── knowledge_base/    # Local policy markdown docs
+├── tests/                 # Complete unit and integration test suite
+│   ├── conftest.py        # Global fixtures and state configuration
+│   ├── integration/
+│   │   └── test_api.py    # Integration tests for FastAPI endpoints
+│   └── unit/
+│       ├── test_nodes.py  # Unit tests for LangGraph nodes with mock LLM calls
+│       └── test_routing.py# Unit tests for routing and human escalation decider
 ├── .env.example
 ├── docker-compose.yml     # Local/dev docker stack
 ├── docker-compose.prod.yml# Production stack with log caps
+├── pytest.ini             # Pytest settings and warning suppression
 └── README.md
 ```
 
