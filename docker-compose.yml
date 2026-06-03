@@ -1,0 +1,48 @@
+---
+# Triageo — Docker Compose
+# Ports: API 8004, Web 3004 (home server allocation)
+# Network: triageo-network (isolated)
+# See ARCHITECTURE.md for port registry notes.
+
+name: triageo
+
+services:
+
+  api:
+    container_name: triageo-api
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    image: triageo-api:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${HOST_IP:-10.0.1.36}:${API_PORT:-8004}:8000"
+    networks:
+      - triageo-network
+    volumes:
+      - ./data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  web:
+    container_name: triageo-web
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    image: triageo-web:latest
+    restart: unless-stopped
+    ports:
+      - "${HOST_IP:-10.0.1.36}:${WEB_PORT:-3004}:80"
+    networks:
+      - triageo-network
+
+networks:
+  triageo-network:
+    name: triageo-network
+    driver: bridge
